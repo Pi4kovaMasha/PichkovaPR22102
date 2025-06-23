@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "844643437691",
+    "project_id": "practic31-38dd0",
+    "storage_bucket": "practic31-38dd0.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:844643437691:android:0dc0c45cceafcb6da0e6de",
+        "android_client_info": {
+          "package_name": "com.example.pichkovapr22102"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAIB7l3gWHvnNMu4yNM2UlJKCYhT6KC81g"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
