@@ -29,12 +29,13 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 
 @Composable
-fun HomeScreen() {
+fun HomeScreen(navController: NavController) {
     val context = LocalContext.current
-    val NewPeninimMT = FontFamily(Font(R.font.new_peninim_mt, FontWeight.Normal))
-    val Raleway = FontFamily(Font(R.font.raleway, FontWeight.Normal))
+    val newPeninimMT = FontFamily(Font(R.font.new_peninim_mt, FontWeight.Normal))
+    val raleway = FontFamily(Font(R.font.raleway, FontWeight.Normal))
 
     Scaffold(
         bottomBar = {
@@ -42,10 +43,8 @@ fun HomeScreen() {
                 containerColor = Color.White,
                 contentColor = Color(0xFF2B2B2B)
             ) {
-                println("NavigationBar: Rendering")
                 NavigationBarItem(
                     icon = {
-                        println("NavigationBarItem: Home")
                         Icon(
                             painter = painterResource(id = R.drawable.ic_home),
                             contentDescription = "Главная",
@@ -58,7 +57,6 @@ fun HomeScreen() {
                 )
                 NavigationBarItem(
                     icon = {
-                        println("NavigationBarItem: Cart")
                         Icon(
                             painter = painterResource(id = R.drawable.ic_cart),
                             contentDescription = "Корзина",
@@ -71,7 +69,6 @@ fun HomeScreen() {
                 )
                 NavigationBarItem(
                     icon = {
-                        println("NavigationBarItem: Notification")
                         Icon(
                             painter = painterResource(id = R.drawable.ic_notification),
                             contentDescription = "Уведомления",
@@ -84,7 +81,6 @@ fun HomeScreen() {
                 )
                 NavigationBarItem(
                     icon = {
-                        println("NavigationBarItem: Profile")
                         Icon(
                             painter = painterResource(id = R.drawable.ic_profile),
                             contentDescription = "Профиль",
@@ -121,7 +117,7 @@ fun HomeScreen() {
                 )
                 Text(
                     text = "Главная",
-                    fontFamily = NewPeninimMT,
+                    fontFamily = newPeninimMT,
                     fontSize = 32.sp,
                     color = Color(0xFF2B2B2B)
                 )
@@ -156,7 +152,7 @@ fun HomeScreen() {
                     placeholder = {
                         Text(
                             text = "Поиск",
-                            fontFamily = NewPeninimMT,
+                            fontFamily = newPeninimMT,
                             fontSize = 12.sp,
                             color = Color(0xFF6A6A6A)
                         )
@@ -206,13 +202,13 @@ fun HomeScreen() {
             ) {
                 Text(
                     text = "Select Category",
-                    fontFamily = NewPeninimMT,
+                    fontFamily = newPeninimMT,
                     fontSize = 16.sp,
                     color = Color(0xFF2B2B2B)
                 )
                 Text(
                     text = "Все",
-                    fontFamily = NewPeninimMT,
+                    fontFamily = newPeninimMT,
                     fontSize = 12.sp,
                     color = Color(0xFF48B2E7),
                     modifier = Modifier.clickable { Toast.makeText(context, "Все категории", Toast.LENGTH_SHORT).show() }
@@ -235,7 +231,7 @@ fun HomeScreen() {
                     ) {
                         Text(
                             text = category,
-                            fontFamily = NewPeninimMT,
+                            fontFamily = newPeninimMT,
                             fontSize = 12.sp,
                             color = Color(0xFF2B2B2B),
                             letterSpacing = 1.sp
@@ -253,16 +249,16 @@ fun HomeScreen() {
             ) {
                 Text(
                     text = "Популярное",
-                    fontFamily = NewPeninimMT,
+                    fontFamily = newPeninimMT,
                     fontSize = 16.sp,
                     color = Color(0xFF2B2B2B)
                 )
                 Text(
                     text = "Все",
-                    fontFamily = NewPeninimMT,
+                    fontFamily = newPeninimMT,
                     fontSize = 12.sp,
                     color = Color(0xFF48B2E7),
-                    modifier = Modifier.clickable { Toast.makeText(context, "Все популярное", Toast.LENGTH_SHORT).show() }
+                    modifier = Modifier.clickable { navController.navigate("popular_products") }
                 )
             }
 
@@ -285,7 +281,7 @@ fun HomeScreen() {
             ) {
                 Text(
                     text = "Акции",
-                    fontFamily = NewPeninimMT,
+                    fontFamily = newPeninimMT,
                     fontSize = 16.sp,
                     color = Color(0xFF2B2B2B),
                     modifier = Modifier.padding(bottom = 8.dp)
@@ -307,7 +303,7 @@ fun HomeScreen() {
 @Composable
 fun ProductCard() {
     val context = LocalContext.current
-    val NewPeninimMT = FontFamily(Font(R.font.new_peninim_mt, FontWeight.Normal))
+    val newPeninimMT = FontFamily(Font(R.font.new_peninim_mt, FontWeight.Normal))
     Box(
         modifier = Modifier
             .size(width = 160.dp, height = 182.dp)
@@ -344,13 +340,13 @@ fun ProductCard() {
             Column {
                 Text(
                     text = "Best Seller".uppercase(),
-                    fontFamily = NewPeninimMT,
+                    fontFamily = newPeninimMT,
                     fontSize = 12.sp,
                     color = Color(0xFF48B2E7)
                 )
                 Text(
                     text = "Nike Air Max",
-                    fontFamily = NewPeninimMT,
+                    fontFamily = newPeninimMT,
                     fontSize = 16.sp,
                     color = Color(0xFF6A6A6A)
                 )
@@ -363,7 +359,7 @@ fun ProductCard() {
         ) {
             Text(
                 text = "₽752.00",
-                fontFamily = NewPeninimMT,
+                fontFamily = newPeninimMT,
                 fontSize = 14.sp,
                 color = Color(0xFF2B2B2B)
             )

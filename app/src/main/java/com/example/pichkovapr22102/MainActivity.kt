@@ -1,7 +1,10 @@
 package com.example.pichkovapr22102
 
+import android.content.Context
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.widget.Toast
+import android.window.SplashScreen
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.background
@@ -26,15 +29,21 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavHostController
 import com.example.pichkovapr22102.R
 import com.google.firebase.FirebaseApp
 import com.google.firebase.auth.FirebaseAuth
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.example.pichkovapr22102.ui.Onboard1Screen
+import com.example.pichkovapr22102.ui.Onboard2Screen
+import com.example.pichkovapr22102.ui.Onboard3Screen
+import com.example.pichkovapr22102.ui.PopularProductsScreen
+import com.example.pichkovapr22102.ui.SplashScreen
 
-class MainActivity: ComponentActivity() {
-        override fun onCreate(savedInstanceState: Bundle?) {
+class MainActivity : ComponentActivity() {
+    override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         try {
             FirebaseApp.initializeApp(this)
@@ -43,16 +52,30 @@ class MainActivity: ComponentActivity() {
         }
         setContent {
             val navController = rememberNavController()
-            NavHost(navController = navController, startDestination = "sign_in") {
-                composable("sign_in") { SignInScreen(navController) }
-                composable("home") { HomeScreen() }
+            val auth = FirebaseAuth.getInstance()
+            val sharedPrefs = getSharedPreferences("app_prefs", Context.MODE_PRIVATE)
+            val hasCompletedOnboarding = sharedPrefs.getBoolean("hasCompletedOnboarding", false)
+            val startDestination = when {
+                auth.currentUser == null -> "sign_in"
+                !hasCompletedOnboarding -> "splash"
+                else -> "home"
+            }
+
+            NavHost(navController = navController, startDestination = startDestination) {
+                composable("sign_in") { SignInScreen(navController, sharedPrefs) }
+                composable("splash") { SplashScreen(navController) }
+                composable("onboard1") { Onboard1Screen(navController) }
+                composable("onboard2") { Onboard2Screen(navController) }
+                composable("onboard3") { Onboard3Screen(navController, sharedPrefs) }
+                composable("home") { HomeScreen(navController) }
+                composable("popular_products") { PopularProductsScreen(navController)
             }
         }
     }
 }
 
 @Composable
-fun SignInScreen(navController: androidx.navigation.NavHostController) {
+fun SignInScreen(navController: NavHostController, sharedPrefs: SharedPreferences) {
     val auth = try {
         FirebaseAuth.getInstance()
     } catch (e: Exception) {
@@ -65,8 +88,8 @@ fun SignInScreen(navController: androidx.navigation.NavHostController) {
     var emailError by remember { mutableStateOf("") }
     var passwordError by remember { mutableStateOf("") }
 
-    val NewPeninimMT = FontFamily(Font(R.font.new_peninim_mt, FontWeight.Normal))
-    val NunitoBold = FontFamily(Font(R.font.nunito_bold, FontWeight.Bold))
+    val newPeninimMT = FontFamily(Font(R.font.new_peninim_mt, FontWeight.Normal))
+    val nunitoBold = FontFamily(Font(R.font.nunito_bold, FontWeight.Bold))
 
     Box(
         modifier = Modifier
@@ -85,7 +108,7 @@ fun SignInScreen(navController: androidx.navigation.NavHostController) {
                 text = "Привет!",
                 fontSize = 32.sp,
                 fontWeight = FontWeight.Normal,
-                fontFamily = NewPeninimMT,
+                fontFamily = newPeninimMT,
                 color = Color(0xFF2B2B2B),
                 textAlign = TextAlign.Center
             )
@@ -93,7 +116,7 @@ fun SignInScreen(navController: androidx.navigation.NavHostController) {
                 text = "Заполните свои данные или продолжите через социальные медиа",
                 fontSize = 16.sp,
                 lineHeight = 24.sp,
-                fontFamily = NunitoBold,
+                fontFamily = nunitoBold,
                 color = Color(0xFF707B81),
                 textAlign = TextAlign.Center,
                 modifier = Modifier.width(315.dp)
@@ -110,13 +133,18 @@ fun SignInScreen(navController: androidx.navigation.NavHostController) {
                 Text(
                     text = "Email",
                     fontSize = 16.sp,
-                    fontFamily = NunitoBold,
+                    fontFamily = nunitoBold,
                     color = Color(0xFF2B2B2B)
                 )
                 TextField(
                     value = email,
                     onValueChange = { email = it },
-                    placeholder = { Text("xyz@gmail.com", color = Color(0xFF6A6A6A).copy(alpha = 0.6f)) },
+                    placeholder = {
+                        Text(
+                            "xyz@gmail.com",
+                            color = Color(0xFF6A6A6A).copy(alpha = 0.6f)
+                        )
+                    },
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(48.dp)
@@ -127,7 +155,10 @@ fun SignInScreen(navController: androidx.navigation.NavHostController) {
                         focusedIndicatorColor = Color.Transparent,
                         unfocusedIndicatorColor = Color.Transparent
                     ),
-                    textStyle = LocalTextStyle.current.copy(fontSize = 14.sp, fontFamily = NunitoBold),
+                    textStyle = LocalTextStyle.current.copy(
+                        fontSize = 14.sp,
+                        fontFamily = nunitoBold
+                    ),
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email)
                 )
                 if (emailError.isNotEmpty()) {
@@ -135,7 +166,7 @@ fun SignInScreen(navController: androidx.navigation.NavHostController) {
                         text = emailError,
                         color = Color.Red,
                         fontSize = 12.sp,
-                        fontFamily = NunitoBold,
+                        fontFamily = nunitoBold,
                         modifier = Modifier.padding(start = 8.dp, top = 4.dp)
                     )
                 }
@@ -145,7 +176,7 @@ fun SignInScreen(navController: androidx.navigation.NavHostController) {
                 Text(
                     text = "Пароль",
                     fontSize = 16.sp,
-                    fontFamily = NunitoBold,
+                    fontFamily = nunitoBold,
                     color = Color(0xFF2B2B2B)
                 )
                 TextField(
@@ -172,7 +203,10 @@ fun SignInScreen(navController: androidx.navigation.NavHostController) {
                         focusedIndicatorColor = Color.Transparent,
                         unfocusedIndicatorColor = Color.Transparent
                     ),
-                    textStyle = LocalTextStyle.current.copy(fontSize = 14.sp, fontFamily = NunitoBold),
+                    textStyle = LocalTextStyle.current.copy(
+                        fontSize = 14.sp,
+                        fontFamily = nunitoBold
+                    ),
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password)
                 )
                 if (passwordError.isNotEmpty()) {
@@ -180,14 +214,14 @@ fun SignInScreen(navController: androidx.navigation.NavHostController) {
                         text = passwordError,
                         color = Color.Red,
                         fontSize = 12.sp,
-                        fontFamily = NunitoBold,
+                        fontFamily = nunitoBold,
                         modifier = Modifier.padding(start = 8.dp, top = 4.dp)
                     )
                 }
                 Text(
                     text = "Восстановить",
                     fontSize = 12.sp,
-                    fontFamily = NunitoBold,
+                    fontFamily = nunitoBold,
                     color = Color(0xFF707B81),
                     textAlign = TextAlign.End,
                     modifier = Modifier
@@ -199,21 +233,46 @@ fun SignInScreen(navController: androidx.navigation.NavHostController) {
 
             Button(
                 onClick = {
-                    emailError = if (email.isEmpty()) "Email не может быть пустым" else if (!email.contains("@")) "Неверный формат email" else ""
-                    passwordError = if (password.isEmpty()) "Пароль не может быть пустым" else if (password.length < 6) "Пароль должен быть не менее 6 символов" else ""
+                    emailError =
+                        if (email.isEmpty()) "Email не может быть пустым" else if (!email.contains("@")) "Неверный формат email" else ""
+                    passwordError =
+                        if (password.isEmpty()) "Пароль не может быть пустым" else if (password.length < 6) "Пароль должен быть не менее 6 символов" else ""
                     if (emailError.isEmpty() && passwordError.isEmpty()) {
                         if (auth != null) {
                             auth.signInWithEmailAndPassword(email, password)
                                 .addOnCompleteListener { task ->
                                     if (task.isSuccessful) {
-                                        Toast.makeText(context, "Успешный вход!", Toast.LENGTH_SHORT).show()
-                                        navController.navigate("home")
+                                        Toast.makeText(
+                                            context,
+                                            "Успешный вход!",
+                                            Toast.LENGTH_SHORT
+                                        ).show()
+                                        // Сбрасываем онбординг, если нужно показать его заново
+                                        if (!sharedPrefs.getBoolean(
+                                                "hasCompletedOnboarding",
+                                                false
+                                            )
+                                        ) {
+                                            sharedPrefs.edit()
+                                                .putBoolean("hasCompletedOnboarding", false).apply()
+                                        }
+                                        navController.navigate("splash") {
+                                            popUpTo("sign_in") { inclusive = true }
+                                        }
                                     } else {
-                                        Toast.makeText(context, "Ошибка: ${task.exception?.message}", Toast.LENGTH_SHORT).show()
+                                        Toast.makeText(
+                                            context,
+                                            "Ошибка: ${task.exception?.message}",
+                                            Toast.LENGTH_SHORT
+                                        ).show()
                                     }
                                 }
                         } else {
-                            Toast.makeText(context, "Firebase не инициализирован", Toast.LENGTH_SHORT).show()
+                            Toast.makeText(
+                                context,
+                                "Firebase не инициализирован",
+                                Toast.LENGTH_SHORT
+                            ).show()
                         }
                     }
                 },
@@ -226,7 +285,7 @@ fun SignInScreen(navController: androidx.navigation.NavHostController) {
                 Text(
                     text = "Войти",
                     fontSize = 14.sp,
-                    fontFamily = NunitoBold,
+                    fontFamily = nunitoBold,
                     color = Color(0xFFF7F7F9)
                 )
             }
@@ -235,7 +294,7 @@ fun SignInScreen(navController: androidx.navigation.NavHostController) {
         Text(
             text = "Вы впервые? Создать пользователя",
             fontSize = 16.sp,
-            fontFamily = NunitoBold,
+            fontFamily = nunitoBold,
             color = Color(0xFF6A6A6A),
             textAlign = TextAlign.Center,
             modifier = Modifier
@@ -245,4 +304,5 @@ fun SignInScreen(navController: androidx.navigation.NavHostController) {
                 .clickable { /* Логика регистрации */ }
         )
     }
+}
 }

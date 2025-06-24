@@ -66,7 +66,8 @@ dependencies {
     implementation(libs.androidx.material3)
     implementation("androidx.compose.material3:material3:1.3.0")
     implementation(libs.firebase.auth) // Добавлено для Firebase Authentication
-    implementation(libs.androidx.navigation.compose) // Для Toast
+    implementation(libs.androidx.navigation.compose)
+    implementation(libs.firebase.firestore.ktx) // Для Toast
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
