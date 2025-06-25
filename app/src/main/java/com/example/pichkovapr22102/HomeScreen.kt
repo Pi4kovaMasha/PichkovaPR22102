@@ -9,14 +9,8 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Icon
-import androidx.compose.material3.NavigationBar
-import androidx.compose.material3.NavigationBarItem
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
-import androidx.compose.material3.TextFieldDefaults
-import androidx.compose.runtime.Composable
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -30,12 +24,15 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import com.example.pichkovapr22102.ui.CartManager
+import com.example.pichkovapr22102.ui.Product
 
 @Composable
 fun HomeScreen(navController: NavController) {
     val context = LocalContext.current
     val newPeninimMT = FontFamily(Font(R.font.new_peninim_mt, FontWeight.Normal))
     val raleway = FontFamily(Font(R.font.raleway, FontWeight.Normal))
+    var searchQuery by remember { mutableStateOf("") }
 
     Scaffold(
         bottomBar = {
@@ -65,7 +62,7 @@ fun HomeScreen(navController: NavController) {
                         )
                     },
                     selected = false,
-                    onClick = { Toast.makeText(context, "Корзина", Toast.LENGTH_SHORT).show() }
+                    onClick = { navController.navigate("my_cart") }
                 )
                 NavigationBarItem(
                     icon = {
@@ -128,7 +125,7 @@ fun HomeScreen(navController: NavController) {
                         tint = Color(0xFF2B2B2B),
                         modifier = Modifier
                             .size(24.dp)
-                            .clickable { Toast.makeText(context, "Корзина", Toast.LENGTH_SHORT).show() }
+                            .clickable { navController.navigate("my_cart") }
                     )
                     Box(
                         modifier = Modifier
@@ -147,8 +144,8 @@ fun HomeScreen(navController: NavController) {
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 TextField(
-                    value = "",
-                    onValueChange = {},
+                    value = searchQuery,
+                    onValueChange = { searchQuery = it },
                     placeholder = {
                         Text(
                             text = "Поиск",
@@ -161,7 +158,8 @@ fun HomeScreen(navController: NavController) {
                         Icon(
                             painter = painterResource(id = R.drawable.ic_search),
                             contentDescription = "Поиск",
-                            tint = Color(0xFF6A6A6A)
+                            tint = Color(0xFF6A6A6A),
+                            modifier = Modifier.clickable { navController.navigate("search/$searchQuery") }
                         )
                     },
                     modifier = Modifier
@@ -269,8 +267,18 @@ fun HomeScreen(navController: NavController) {
                     .horizontalScroll(rememberScrollState()),
                 horizontalArrangement = Arrangement.spacedBy(15.dp)
             ) {
-                repeat(2) {
-                    ProductCard()
+                val sampleProducts = listOf(
+                    Product(id = "1", name = "Nike Air Max", price = 752.00, isBestSeller = true),
+                    Product(id = "2", name = "Nike Club Max", price = 584.95, isBestSeller = false)
+                )
+                sampleProducts.forEach { product ->
+                    ProductCard(
+                        product = product,
+                        onAddToCartClick = {
+                            CartManager.addToCart(product)
+                            Toast.makeText(context, "Добавлено в корзину: ${product.name}", Toast.LENGTH_SHORT).show()
+                        }
+                    )
                 }
             }
 
@@ -301,7 +309,7 @@ fun HomeScreen(navController: NavController) {
 }
 
 @Composable
-fun ProductCard() {
+fun ProductCard(product: Product, onAddToCartClick: () -> Unit) {
     val context = LocalContext.current
     val newPeninimMT = FontFamily(Font(R.font.new_peninim_mt, FontWeight.Normal))
     Box(
@@ -332,20 +340,22 @@ fun ProductCard() {
         ) {
             Image(
                 painter = painterResource(id = R.drawable.nike_shoe),
-                contentDescription = "Товар",
+                contentDescription = product.name,
                 modifier = Modifier
                     .size(117.91.dp, 70.dp)
                     .align(Alignment.CenterHorizontally)
             )
             Column {
+                if (product.isBestSeller) {
+                    Text(
+                        text = "Best Seller".uppercase(),
+                        fontFamily = newPeninimMT,
+                        fontSize = 12.sp,
+                        color = Color(0xFF48B2E7)
+                    )
+                }
                 Text(
-                    text = "Best Seller".uppercase(),
-                    fontFamily = newPeninimMT,
-                    fontSize = 12.sp,
-                    color = Color(0xFF48B2E7)
-                )
-                Text(
-                    text = "Nike Air Max",
+                    text = product.name,
                     fontFamily = newPeninimMT,
                     fontSize = 16.sp,
                     color = Color(0xFF6A6A6A)
@@ -358,7 +368,7 @@ fun ProductCard() {
                 .padding(start = 9.dp, bottom = 8.dp)
         ) {
             Text(
-                text = "₽752.00",
+                text = "₽${product.price}",
                 fontFamily = newPeninimMT,
                 fontSize = 14.sp,
                 color = Color(0xFF2B2B2B)
@@ -369,7 +379,7 @@ fun ProductCard() {
                 .align(Alignment.BottomEnd)
                 .size(34.dp)
                 .background(Color(0xFF48B2E7), RoundedCornerShape(topStart = 16.dp))
-                .clickable { Toast.makeText(context, "Добавить в корзину", Toast.LENGTH_SHORT).show() },
+                .clickable { onAddToCartClick() },
             contentAlignment = Alignment.Center
         ) {
             Text(

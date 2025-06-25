@@ -131,7 +131,10 @@ fun PopularProductsScreen(navController: NavController) {
                 ProductCard(
                     product = product,
                     onFavoriteClick = { Toast.makeText(context, "Добавлено в избранное: ${product.name}", Toast.LENGTH_SHORT).show() },
-                    onAddToCartClick = { Toast.makeText(context, "Добавлено в корзину: ${product.name}", Toast.LENGTH_SHORT).show() }
+                    onAddToCartClick = {
+                        CartManager.addToCart(product)
+                        Toast.makeText(context, "Добавлено в корзину: ${product.name}", Toast.LENGTH_SHORT).show()
+                    }
                 )
             }
         }

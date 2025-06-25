@@ -4,7 +4,6 @@ import android.content.Context
 import android.content.SharedPreferences
 import android.os.Bundle
 import android.widget.Toast
-import android.window.SplashScreen
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.background
@@ -36,11 +35,7 @@ import com.google.firebase.auth.FirebaseAuth
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.example.pichkovapr22102.ui.Onboard1Screen
-import com.example.pichkovapr22102.ui.Onboard2Screen
-import com.example.pichkovapr22102.ui.Onboard3Screen
-import com.example.pichkovapr22102.ui.PopularProductsScreen
-import com.example.pichkovapr22102.ui.SplashScreen
+import com.example.pichkovapr22102.ui.*
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -68,7 +63,8 @@ class MainActivity : ComponentActivity() {
                 composable("onboard2") { Onboard2Screen(navController) }
                 composable("onboard3") { Onboard3Screen(navController, sharedPrefs) }
                 composable("home") { HomeScreen(navController) }
-                composable("popular_products") { PopularProductsScreen(navController)
+                composable("popular_products") { PopularProductsScreen(navController) }
+                composable("my_cart") { MyCartScreen(navController) }
             }
         }
     }
@@ -247,7 +243,6 @@ fun SignInScreen(navController: NavHostController, sharedPrefs: SharedPreference
                                             "Успешный вход!",
                                             Toast.LENGTH_SHORT
                                         ).show()
-                                        // Сбрасываем онбординг, если нужно показать его заново
                                         if (!sharedPrefs.getBoolean(
                                                 "hasCompletedOnboarding",
                                                 false
@@ -304,5 +299,4 @@ fun SignInScreen(navController: NavHostController, sharedPrefs: SharedPreference
                 .clickable { /* Логика регистрации */ }
         )
     }
-}
 }

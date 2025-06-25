@@ -65,9 +65,11 @@ dependencies {
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
     implementation("androidx.compose.material3:material3:1.3.0")
+    implementation("com.google.code.gson:gson:2.10.1")
     implementation(libs.firebase.auth) // Добавлено для Firebase Authentication
     implementation(libs.androidx.navigation.compose)
-    implementation(libs.firebase.firestore.ktx) // Для Toast
+    implementation(libs.firebase.firestore.ktx)
+    implementation(libs.firebase.crashlytics.buildtools) // Для Toast
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
