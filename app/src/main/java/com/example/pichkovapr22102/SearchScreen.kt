@@ -26,7 +26,6 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.pichkovapr22102.R
 import com.google.gson.Gson
-import com.google.gson.reflect.TypeToken
 
 @Composable
 fun SearchScreen(navController: NavController, initialQuery: String = "") {
@@ -36,7 +35,6 @@ fun SearchScreen(navController: NavController, initialQuery: String = "") {
     var searchQuery by remember { mutableStateOf(TextFieldValue(initialQuery)) }
     val searchHistory = remember { mutableStateListOf<String>() }
 
-    // Загрузка истории поиска из SharedPreferences
     LaunchedEffect(Unit) {
         val historyJson = sharedPrefs.getString("search_history", null)
         if (historyJson != null) {
@@ -46,11 +44,10 @@ fun SearchScreen(navController: NavController, initialQuery: String = "") {
         }
     }
 
-    // Сохранение запроса в историю
     fun saveSearchQuery(query: String) {
         if (query.isNotBlank() && !searchHistory.contains(query)) {
-            searchHistory.add(0, query) // Добавляем в начало списка
-            if (searchHistory.size > 10) searchHistory.removeAt(searchHistory.size - 1) // Ограничиваем до 10 записей
+            searchHistory.add(0, query)
+            if (searchHistory.size > 10) searchHistory.removeAt(searchHistory.size - 1)
             val historyJson = Gson().toJson(searchHistory)
             sharedPrefs.edit().putString("search_history", historyJson).apply()
         }
@@ -62,7 +59,6 @@ fun SearchScreen(navController: NavController, initialQuery: String = "") {
             .background(Color(0xFFF7F7F9))
             .padding(top = 16.dp)
     ) {
-        // Верхняя панель
         Row(
             modifier = Modifier
                 .fillMaxWidth()
@@ -90,10 +86,9 @@ fun SearchScreen(navController: NavController, initialQuery: String = "") {
                 fontSize = 16.sp,
                 color = Color(0xFF2B2B2B)
             )
-            Spacer(modifier = Modifier.size(44.dp)) // Балансировка для симметрии
+            Spacer(modifier = Modifier.size(44.dp))
         }
 
-        // Поле поиска
         Row(
             modifier = Modifier
                 .fillMaxWidth()
@@ -152,7 +147,6 @@ fun SearchScreen(navController: NavController, initialQuery: String = "") {
             )
         }
 
-        // История поиска
         LazyColumn(
             modifier = Modifier
                 .fillMaxWidth()
@@ -187,7 +181,6 @@ fun SearchScreen(navController: NavController, initialQuery: String = "") {
             }
         }
 
-        // Кнопка для сохранения запроса (для тестирования)
         Spacer(modifier = Modifier.weight(1f))
         Button(
             onClick = {

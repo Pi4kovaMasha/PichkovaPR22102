@@ -32,13 +32,11 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 
-// Модель для элемента корзины
 data class CartItem(
     val product: Product,
     val quantity: Int
 )
 
-// Управление корзиной
 object CartManager {
     private val _cartItems = MutableStateFlow<List<CartItem>>(emptyList())
     val cartItems: StateFlow<List<CartItem>> = _cartItems.asStateFlow()
@@ -77,7 +75,7 @@ object CartManager {
     }
 
     fun getTotalPrice(): Double {
-        return _cartItems.value.sumOf { it.product.price * it.quantity } + 60.20 // Добавляем стоимость доставки
+        return _cartItems.value.sumOf { it.product.price * it.quantity } + 60.20
     }
 
     fun getSubtotalPrice(): Double {
@@ -102,7 +100,6 @@ fun MyCartScreen(navController: NavController) {
             .background(Color(0xFFF7F7F9))
             .padding(top = 16.dp)
     ) {
-        // Верхняя панель
         Row(
             modifier = Modifier
                 .fillMaxWidth()
@@ -130,10 +127,9 @@ fun MyCartScreen(navController: NavController) {
                 fontSize = 16.sp,
                 color = Color(0xFF2B2B2B)
             )
-            Spacer(modifier = Modifier.size(44.dp)) // Балансировка для симметрии
+            Spacer(modifier = Modifier.size(44.dp))
         }
 
-        // Количество товаров
         Text(
             text = "${CartManager.getItemCount()} товара",
             fontFamily = newPeninimMT,
@@ -143,7 +139,6 @@ fun MyCartScreen(navController: NavController) {
                 .padding(start = 20.dp, top = 16.dp)
         )
 
-        // Список товаров
         LazyColumn(
             modifier = Modifier
                 .fillMaxWidth()
@@ -163,7 +158,6 @@ fun MyCartScreen(navController: NavController) {
             }
         }
 
-        // Итоговая секция
         Box(
             modifier = Modifier
                 .fillMaxWidth()
@@ -175,7 +169,6 @@ fun MyCartScreen(navController: NavController) {
                     .fillMaxWidth()
                     .padding(horizontal = 20.dp)
             ) {
-                // Сумма
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.SpaceBetween
@@ -194,7 +187,6 @@ fun MyCartScreen(navController: NavController) {
                     )
                 }
                 Spacer(modifier = Modifier.height(8.dp))
-                // Доставка
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.SpaceBetween
@@ -213,7 +205,6 @@ fun MyCartScreen(navController: NavController) {
                     )
                 }
                 Spacer(modifier = Modifier.height(16.dp))
-                // Разделительная линия
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -221,7 +212,6 @@ fun MyCartScreen(navController: NavController) {
                         .background(Color(0xFF707B81), shape = RoundedCornerShape(1.dp))
                         .clip(RoundedCornerShape(1.dp))
                 ) {
-                    // Пунктирная линия (имитация dashed)
                     Box(
                         modifier = Modifier
                             .fillMaxWidth()
@@ -233,7 +223,6 @@ fun MyCartScreen(navController: NavController) {
                     )
                 }
                 Spacer(modifier = Modifier.height(16.dp))
-                // Итого
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.SpaceBetween
@@ -252,7 +241,6 @@ fun MyCartScreen(navController: NavController) {
                     )
                 }
                 Spacer(modifier = Modifier.height(24.dp))
-                // Кнопка "Оформить заказ"
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -289,7 +277,6 @@ fun CartItemCard(
             .background(Color.White, RoundedCornerShape(8.dp))
             .shadow(4.dp, RoundedCornerShape(8.dp))
     ) {
-        // Количество
         Box(
             modifier = Modifier
                 .width(58.dp)
@@ -339,7 +326,6 @@ fun CartItemCard(
                 }
             }
         }
-        // Изображение
         Box(
             modifier = Modifier
                 .offset(x = 68.dp)
@@ -353,7 +339,6 @@ fun CartItemCard(
                 modifier = Modifier.size(86.dp, 55.dp)
             )
         }
-        // Название и цена
         Column(
             modifier = Modifier
                 .offset(x = 165.dp, y = 20.dp)
@@ -375,7 +360,6 @@ fun CartItemCard(
                 lineHeight = 14.sp
             )
         }
-        // Кнопка удаления
         Box(
             modifier = Modifier
                 .align(Alignment.TopEnd)

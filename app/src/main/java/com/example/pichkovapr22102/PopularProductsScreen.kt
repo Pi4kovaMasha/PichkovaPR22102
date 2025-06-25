@@ -29,7 +29,6 @@ import androidx.navigation.NavController
 import com.example.pichkovapr22102.R
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
 
 data class Product(
     val id: String = "",
@@ -45,7 +44,6 @@ fun PopularProductsScreen(navController: NavController) {
     val firestore = FirebaseFirestore.getInstance()
     val productsFlow = MutableStateFlow<List<Product>>(emptyList())
 
-    // Загрузка данных из Firestore
     firestore.collection("products")
         .get()
         .addOnSuccessListener { result ->

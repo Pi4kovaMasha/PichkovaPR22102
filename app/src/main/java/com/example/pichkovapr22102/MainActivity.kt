@@ -13,6 +13,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -29,13 +30,13 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
-import com.example.pichkovapr22102.R
 import com.google.firebase.FirebaseApp
 import com.google.firebase.auth.FirebaseAuth
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.pichkovapr22102.ui.*
+
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -58,6 +59,8 @@ class MainActivity : ComponentActivity() {
 
             NavHost(navController = navController, startDestination = startDestination) {
                 composable("sign_in") { SignInScreen(navController, sharedPrefs) }
+                composable("register") { RegisterScreen(navController) }
+                composable("forgot_password") { ForgotPasswordScreen(navController) }
                 composable("splash") { SplashScreen(navController) }
                 composable("onboard1") { Onboard1Screen(navController) }
                 composable("onboard2") { Onboard2Screen(navController) }
@@ -65,6 +68,10 @@ class MainActivity : ComponentActivity() {
                 composable("home") { HomeScreen(navController) }
                 composable("popular_products") { PopularProductsScreen(navController) }
                 composable("my_cart") { MyCartScreen(navController) }
+                composable("search/{query}") { backStackEntry ->
+                    val query = backStackEntry.arguments?.getString("query") ?: ""
+                    SearchScreen(navController, query)
+                }
             }
         }
     }
@@ -78,8 +85,8 @@ fun SignInScreen(navController: NavHostController, sharedPrefs: SharedPreference
         null
     }
     val context = LocalContext.current
-    var email by remember { mutableStateOf("") }
-    var password by remember { mutableStateOf("") }
+    var email by rememberSaveable { mutableStateOf("") }
+    var password by rememberSaveable { mutableStateOf("") }
     var passwordVisible by remember { mutableStateOf(false) }
     var emailError by remember { mutableStateOf("") }
     var passwordError by remember { mutableStateOf("") }
@@ -223,7 +230,7 @@ fun SignInScreen(navController: NavHostController, sharedPrefs: SharedPreference
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(top = 8.dp)
-                        .clickable { /* Логика восстановления пароля */ }
+                        .clickable { navController.navigate("forgot_password") }
                 )
             }
 
@@ -296,7 +303,7 @@ fun SignInScreen(navController: NavHostController, sharedPrefs: SharedPreference
                 .fillMaxWidth()
                 .padding(bottom = 16.dp)
                 .align(Alignment.BottomCenter)
-                .clickable { /* Логика регистрации */ }
+                .clickable { navController.navigate("register") }
         )
     }
 }
